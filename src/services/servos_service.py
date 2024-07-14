@@ -1,4 +1,7 @@
 from drivers.servo import Servo
+import logging
+
+logger = logging.getLogger('ServosService')
 
 class ServosService:
     _PIN_X = 12
@@ -11,12 +14,14 @@ class ServosService:
     _servo_y: Servo = None
 
     def __init__(self) -> None:
+        logger.info("Initilize the servos")
         self._servo_x = Servo(self._PIN_X)
         self._servo_y = Servo(self._PIN_Y)
 
     def set_servos_angles(self, angle_x, angle_y) -> None:
-        pulse_width_x = self._MIN_PULSE_WIDTH + (angle_x / 180.0) * (self._MAX_PULSE_WIDTH - self._MIN_PULSE_WIDTH)
-        pulse_width_y = self._MIN_PULSE_WIDTH + (angle_y / 180.0) * (self._MAX_PULSE_WIDTH - self._MIN_PULSE_WIDTH)
+        pulse_width_x = self._MIN_PULSE_WIDTH + ((angle_x / 180.0) * (self._MAX_PULSE_WIDTH - self._MIN_PULSE_WIDTH))
+        pulse_width_y = self._MIN_PULSE_WIDTH + ((angle_y / 180.0) * (self._MAX_PULSE_WIDTH - self._MIN_PULSE_WIDTH))
         
+        logger.debug(f"Received angle and converted it into pulse width ({angle_x}, {angle_y}) -> ({pulse_width_x}, {pulse_width_y})")
         self._servo_x.set_servo_pulsewidth(pulse_width_x)
         self._servo_y.set_servo_pulsewidth(pulse_width_y)

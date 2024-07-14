@@ -1,17 +1,27 @@
 from rpyc.utils.server import ThreadedServer
 from rpc.servos_rpc import ServosRpc
+import logging
+
+logging.basicConfig(level=logging.DEBUG, 
+                    format='[%(asctime)s] %(levelname)s - %(name)s : %(message)s',
+                    handlers=[
+                        logging.FileHandler("app.log"),
+                        logging.StreamHandler()
+                    ])
+
+logger  = logging.getLogger('Main')
 
 server = ThreadedServer(ServosRpc, port = 18812)
 
 try:
     if __name__ == "__main__":
-        print("[main] Start server")
+        logger.info("Start server")
         server.start()
 
 except KeyboardInterrupt:
-    print("[main] Stop server")
+    logger.info("Stop server")
     server.close()
 
 finally:
-    print("[main] Stop server")
+    logger.info("Stop server")
     server.close()
