@@ -1,0 +1,9 @@
+services:
+  cyclopowl-hardware:
+    container_name: cyclopowl-hardware
+    build: .
+    volumes:
+      - ./:/app/
+    # devices:
+    #   - "/dev/gpiomem:/dev/gpiomem" # Permet l'accès aux GPIO
+    privileged: true # Nécessaire pour accéder aux périphériques matériels
