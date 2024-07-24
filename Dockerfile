@@ -1,6 +1,6 @@
 FROM arm32v6/python:3.8-alpine
 
-RUN apk add alpine-sdk
+RUN apk add alpine-sdk cmake openssl
 
 RUN wget --output-document=download.zip https://github.com/joan2937/pigpio/archive/master.zip \
     && mkdir download \
@@ -10,15 +10,14 @@ RUN wget --output-document=download.zip https://github.com/joan2937/pigpio/archi
     && make \
     && make install
 
-# Installer les dépendances Python
-RUN pip install pigpio rpyc
+# RUN pip install wheel
+# RUN pip install cmake
+RUN pip install pigpio rpyc opencv-python==4.5.5.64
 
-# Copier le script de contrôle du servo dans le conteneur
 WORKDIR /app
 COPY . /app
 
-# Exposer le port pour pigpiod
-EXPOSE 8888
+# EXPOSE 8888
 
 # Démarrer pigpiod et le script Python
 # CMD ["sh", "-c", "sleep 30000"]

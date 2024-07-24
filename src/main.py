@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.DEBUG,
 
 logger  = logging.getLogger('Main')
 
-# server = ThreadedServer(ServosRpc, port = 18812)
+server = ThreadedServer(ServosRpc, port = 18812)
 
 try:
     if __name__ == "__main__":
