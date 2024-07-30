@@ -2,8 +2,6 @@ FROM balenalib/rpi-debian-python:3.11-buster
 
 RUN pip install pigpio rpyc 
 
-# RUN pip install picamera
-
 RUN apt update && apt install pigpio python3-numpy python-picamera python3-picamera
 WORKDIR /app
 
