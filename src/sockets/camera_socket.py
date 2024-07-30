@@ -1,36 +1,39 @@
-import io
-# import socket
-# import struct
-import time
-import picamera
 import logging
+import socket
+import io
+from drivers.camera import Camera
+# import io
+# import struct
+# import time
 
-logger = logging.getLogger('Camera')
+logger = logging.getLogger('CameraSocket')
 
 
-class Camera:
+class CameraSocket:
     def __init__(self) -> None:
-        self.camera = picamera.PiCamera()
-        self.camera.resolution = (640, 480)
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.bind(("0.0.0.0", 8000))
+        self.socket.listen()
 
-    def start(self) -> None:
-        logger.info('Start and warm up the camera')
-        self.camera.start_preview()
-        time.sleep(2)
+        self.camera = Camera()
+    
+    def listen(self):
+        conn, addr = self.socket.accept()
 
-    def record(self) -> None:
-        stream = io.BytesIO()
-        for frame in self.camera.capture_continuous(stream, 'jpeg'):
-            yield frame
-            frame.seek(0)
-            frame.truncate()
+        with conn:
+            print(f"Connecté par {addr}")
+            
+            self.camera.start()
 
-    def stop(self) -> None:
-        logger.info('Stop the camera')
-        self.camera.stop_preview()
+            for stream in self.camera.record():
+                logger.info(stream)
+                conn.send(stream.getvalue())
+                # conn.send(io.BytesIO(b"test").getvalue())
 
-
-
+            self.camera.stop()
+            conn.close()
+            self.socket.close()
+        
 # def init_camera():
 #     client_socket = socket.socket()
 #     client_socket.connect(('192.168.1.44', 8000))

@@ -1,7 +1,8 @@
 # from rpyc.utils.server import ThreadedServer
 # from rpcs.servos_rpc import ServosRpc
 # from sockets.camera import init_camera
-from sockets.camera_socket import Camera
+from sockets.camera_socket import CameraSocket
+
 import logging
 
 logging.basicConfig(level=logging.DEBUG,
@@ -13,22 +14,22 @@ logging.basicConfig(level=logging.DEBUG,
 
 logger = logging.getLogger('Main')
 
-camera = Camera()
-
-# server = ThreadedServer(ServosRpc, port = 18812)
+# camera = Camera()
+camera_socket = CameraSocket()
 
 try:
     if __name__ == "__main__":
         logger.info("Start server")
-        camera.start()
-        for stream in camera.record():
-            logger.info(stream)
-        # server.start()
-        # init_camera()
+        # camera.start()
+        # for stream in camera.record():
+        #     logger.info(stream)
+        camera_socket.listen()
+
+        
 except KeyboardInterrupt:
     pass
 
 finally:
     logger.info("Stop server")
-    camera.stop()
+    # camera.stop()
     # server.close()
