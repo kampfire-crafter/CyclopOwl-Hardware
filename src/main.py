@@ -1,8 +1,14 @@
+# import psutil
+# import os
+# process = psutil.Process(os.getpid())
+# print(f"Memory usage: {process.memory_info().rss / 1024 / 1024} MB")
+
 # from rpyc.utils.server import ThreadedServer
 # from rpcs.servos_rpc import ServosRpc
 # from sockets.camera import init_camera
-from sockets.camera_socket import CameraSocket
 
+from sockets.camera_socket import CameraSocket
+import time
 import logging
 
 logging.basicConfig(level=logging.DEBUG,
@@ -14,22 +20,22 @@ logging.basicConfig(level=logging.DEBUG,
 
 logger = logging.getLogger('Main')
 
-# camera = Camera()
 camera_socket = CameraSocket()
 
 try:
     if __name__ == "__main__":
-        logger.info("Start server")
-        # camera.start()
-        # for stream in camera.record():
-        #     logger.info(stream)
-        camera_socket.listen()
+        logger.info("CyclopOwl - Start")
+        camera_socket.start()
 
-        
+        while True:
+            logger.debug("CyclopOwl - Running")
+            if not camera_socket.is_alive():
+                camera_socket = CameraSocket()
+                camera_socket.start()
+            time.sleep(2)
+
 except KeyboardInterrupt:
     pass
 
 finally:
     logger.info("Stop server")
-    # camera.stop()
-    # server.close()

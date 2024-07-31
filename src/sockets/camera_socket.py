@@ -1,70 +1,46 @@
 import logging
 import socket
-import io
 from drivers.camera import Camera
 # import io
-# import struct
+import struct
 # import time
+from threading import Thread
 
 logger = logging.getLogger('CameraSocket')
 
 
-class CameraSocket:
+class CameraSocket(Thread):
     def __init__(self) -> None:
+        super().__init__()
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.bind(("0.0.0.0", 8000))
         self.socket.listen()
-
-        self.camera = Camera()
     
-    def listen(self):
-        conn, addr = self.socket.accept()
+    def run(self):
+        try:
+            conn, addr = self.socket.accept()
 
-        with conn:
-            print(f"Connecté par {addr}")
-            
-            self.camera.start()
+            with conn:
+                logger.info(f"Client connected : {addr}")
+                
+                camera = Camera()
+                camera.start()
 
-            for stream in self.camera.record():
-                logger.info(stream)
-                conn.send(stream.getvalue())
-                # conn.send(io.BytesIO(b"test").getvalue())
+                for stream in camera.record():
+                    logger.debug(stream)
+                    #conn.send(stream.getvalue())
+                    size = struct.pack('<L', stream.tell())
+                    stream.seek(0)
+                    # read = stream.read()
+                    read = stream.getvalue()
+                    conn.send(size)
+                    conn.send(read)
+                    
 
-            self.camera.stop()
+        except (BrokenPipeError, ConnectionResetError):
+            logger.info("Client disconnected")
+
+        finally:
             conn.close()
             self.socket.close()
-        
-# def init_camera():
-#     client_socket = socket.socket()
-#     client_socket.connect(('192.168.1.44', 8000))
-
-#     connection = client_socket.makefile('wb')
-
-#     try:
-#         camera = picamera.PiCamera()
-#         camera.resolution = (640, 480)
-
-#         camera.start_preview()
-#         time.sleep(2)
-
-#         start = time.time()
-#         logger.info(start)
-#         stream = io.BytesIO()
-#         for foo in camera.capture_continuous(stream, 'jpeg'):
-
-#             connection.write(struct.pack('<L', stream.tell()))
-#             connection.flush()
-
-#             stream.seek(0)
-#             connection.write(stream.read())
-
-#             if time.time() - start > 60:
-#                 break
-
-#             stream.seek(0)
-#             stream.truncate()
-
-#         connection.write(struct.pack('<L', 0))
-#     finally:
-#         connection.close()
-#         client_socket.close()
+            camera.stop()
