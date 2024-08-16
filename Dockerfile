@@ -1,10 +1,8 @@
-FROM balenalib/rpi-debian-python:3.11-buster
+FROM python:3.10-slim
 
-RUN pip install pigpio rpyc 
+RUN pip install pigpio rpyc pytest
 
-RUN apt update && apt install pigpio python3-numpy python-picamera python3-picamera
+RUN apt update && apt install python3-numpy -y
 WORKDIR /app
 
 COPY . /app
-
-CMD ["sh", "-c", "pigpiod && sleep 2 && python /app/src/main.py > /dev/stdout 2>&1"]

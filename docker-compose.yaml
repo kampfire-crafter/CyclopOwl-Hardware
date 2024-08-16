@@ -4,7 +4,4 @@ services:
     build: .
     volumes:
       - ./:/app/
-    network_mode: "host"
-    # devices:
-    #   - "/dev/gpiomem:/dev/gpiomem" # Permet l'accès aux GPIO
-    privileged: true # Nécessaire pour accéder aux périphériques matériels
+    command: ["/bin/bash", "-c", "sleep 100000"]

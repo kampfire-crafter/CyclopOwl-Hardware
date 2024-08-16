@@ -10,12 +10,12 @@ logging.basicConfig(level=logging.DEBUG,
 
 logger = logging.getLogger('Main')
 
-camera_socket = MainSocket()
+main_socket = MainSocket()
 
 try:
     if __name__ == "__main__":
         logger.info("CyclopOwl - Start")
-        camera_socket.listen()
+        main_socket.listen()
 
 except KeyboardInterrupt:
     pass

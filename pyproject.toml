@@ -1,3 +1,8 @@
+[project]
+name = "cyclopowl-hardware"
+version = "0.1.0"
+requires-python = ">= 3.9"
+
 [tool.pytest.ini_options]
 pythonpath = [
   "src"
