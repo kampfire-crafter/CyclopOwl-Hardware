@@ -1,6 +1,6 @@
-# import io
-# import time
-# import picamera
+import io
+import time
+import picamera
 import logging
 from drivers.camera_interface import CameraInterface
 
@@ -9,26 +9,22 @@ logger = logging.getLogger('Camera')
 
 class Camera(CameraInterface):
     def __init__(self) -> None:
-        pass
-        # self.camera = picamera.PiCamera()
-        # self.camera.resolution = (640, 480)
+        self.camera = picamera.PiCamera()
+        self.camera.resolution = (640, 480)
 
     def start(self) -> None:
-        pass
-        # logger.info('Start and warm up the camera')
-        # self.camera.start_preview()
-        # time.sleep(2)
+        logger.info('Start and warm up the camera')
+        self.camera.start_preview()
+        time.sleep(2)
 
     def record(self):
-        pass
-        # stream = io.BytesIO()
-        # for frame in self.camera.capture_continuous(stream, 'jpeg'):
-        #     yield frame
-        #     frame.seek(0)
-        #     frame.truncate()
+        stream = io.BytesIO()
+        for frame in self.camera.capture_continuous(stream, 'jpeg'):
+            yield frame
+            frame.seek(0)
+            frame.truncate()
 
     def stop(self) -> None:
-        pass
-        # logger.info('Stop the camera')
-        # self.camera.stop_preview()
-        # self.camera.close()
+        logger.info('Stop the camera')
+        self.camera.stop_preview()
+        self.camera.close()

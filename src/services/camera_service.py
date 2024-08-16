@@ -1,6 +1,6 @@
-from dependency_injector.wiring import Provide, inject
 from services.camera_service_interface import CameraServiceInterface
 from drivers.camera_interface import CameraInterface
+
 
 class CameraService(CameraServiceInterface):
     def __init__(self, camera: CameraInterface) -> None:

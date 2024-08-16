@@ -7,6 +7,7 @@ from services.camera_service_interface import CameraServiceInterface
 
 logger = logging.getLogger("ClientHandler")
 
+
 class ClientHandler(ClientHandlerInterface):
     def __init__(self, camera_service: CameraServiceInterface) -> None:
         self._camera_service = camera_service

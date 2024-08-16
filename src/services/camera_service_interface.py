@@ -4,6 +4,6 @@ class CameraServiceInterface:
 
     def stop(self):
         pass
-    
+
     def record(self):
         pass

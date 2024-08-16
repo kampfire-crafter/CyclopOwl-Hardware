@@ -1,8 +1,9 @@
-import socket
-import logging
 from handlers.client_handler_interface import ClientHandlerInterface
+import logging
+import socket
 
 logger = logging.getLogger('MainSocket')
+
 
 class MainSocket:
     def __init__(self, host: str, port: int, client_handler: ClientHandlerInterface) -> None:
