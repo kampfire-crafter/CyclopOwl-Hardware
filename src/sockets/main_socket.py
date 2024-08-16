@@ -16,13 +16,14 @@ class MainSocket:
         while self._is_running:
             try:
                 conn, addr = self._socket.accept()
+                logger.info("Client connected : %s", addr)
 
                 with conn:
                     self._client_handler.handle(conn, addr)
 
-            except (BrokenPipeError, ConnectionResetError, KeyboardInterrupt) as e:
-                logger.error(e)
-        
+            except (BrokenPipeError, ConnectionResetError):
+                logger.info("Client disconnected : %s", addr)
+
     def stop(self) -> None:
         # self._socket.shutdown(socket.SHUT_RDWR)
         self._is_running = False

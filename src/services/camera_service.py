@@ -1,3 +1,4 @@
+from dependency_injector.wiring import Provide, inject
 from services.camera_service_interface import CameraServiceInterface
 from drivers.camera_interface import CameraInterface
 
