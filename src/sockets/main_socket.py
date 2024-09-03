@@ -14,16 +14,19 @@ class MainSocket:
         self._is_running = True
 
     def listen(self) -> None:
+        try:
+            self._listen_new_client()
+
+        except (BrokenPipeError, ConnectionResetError):
+            logger.info("Client disconnected")
+
+    def _listen_new_client(self):
         while self._is_running:
-            try:
-                conn, addr = self._socket.accept()
-                logger.info("Client connected : %s", addr)
+            conn, addr = self._socket.accept()
+            logger.info("Client connected : %s", addr)
 
-                with conn:
-                    self._socket_client_handler.handle(conn, addr)
-
-            except (BrokenPipeError, ConnectionResetError):
-                logger.info("Client disconnected : %s", addr)
+            with conn:
+                self._socket_client_handler.handle(conn, addr)
 
     def stop(self) -> None:
         # self._socket.shutdown(socket.SHUT_RDWR)
