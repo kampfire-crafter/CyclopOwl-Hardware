@@ -1,4 +1,4 @@
-from handlers.client_handler_interface import ClientHandlerInterface
+from socket_handlers.socket_client_handler_interface import SocketClientHandlerInterface
 import logging
 import socket
 
@@ -6,11 +6,11 @@ logger = logging.getLogger('MainSocket')
 
 
 class MainSocket:
-    def __init__(self, host: str, port: int, client_handler: ClientHandlerInterface) -> None:
+    def __init__(self, host: str, port: int, client_handler: SocketClientHandlerInterface) -> None:
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._socket.bind((host, port))
         self._socket.listen()
-        self._client_handler = client_handler
+        self._socket_client_handler = client_handler
         self._is_running = True
 
     def listen(self) -> None:
@@ -20,7 +20,7 @@ class MainSocket:
                 logger.info("Client connected : %s", addr)
 
                 with conn:
-                    self._client_handler.handle(conn, addr)
+                    self._socket_client_handler.handle(conn, addr)
 
             except (BrokenPipeError, ConnectionResetError):
                 logger.info("Client disconnected : %s", addr)

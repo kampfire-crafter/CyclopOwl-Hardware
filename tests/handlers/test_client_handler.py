@@ -2,7 +2,7 @@ import pytest
 import time
 import socket
 import io
-from handlers.client_handler import ClientHandler
+from socket_handlers.socket_client_handler import SocketClientHandler
 from services.camera_service_interface import CameraServiceInterface
 from unittest.mock import MagicMock
 
@@ -33,7 +33,7 @@ class TestClientHandler:
         mock_socket = MagicMock(spec=socket.socket)
         mock_socket.send = MagicMock()
 
-        client_handler = ClientHandler(camera_service)
+        client_handler = SocketClientHandler(camera_service)
         client_handler.handle(mock_socket, "127.0.0.2")
 
         assert camera_service.is_running is True

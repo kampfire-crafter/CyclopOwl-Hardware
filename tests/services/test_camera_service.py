@@ -6,7 +6,7 @@ from services.camera_service import CameraService
 def stream_mock():
     return [io.StringIO(str(i)) for i in range(0, 9)]
 
-class CameraMock(CameraDriverInterface):
+class CameraDriverMock(CameraDriverInterface):
     def __init__(self):
         self.is_running = False
 
@@ -21,23 +21,23 @@ class CameraMock(CameraDriverInterface):
             yield i
 
 @pytest.fixture
-def camera_mock():
-    return CameraMock()
+def camera_driver_mock():
+    return CameraDriverMock()
 
 
 class TestCameraService:
-    def test_camera_start_stop(self, camera_mock):
-        camera_service = CameraService(camera_mock)
+    def test_camera_start_stop(self, camera_driver_mock):
+        camera_service = CameraService(camera_driver_mock)
 
         camera_service.start()
-        assert camera_mock.is_running is True
+        assert camera_driver_mock.is_running is True
         
         camera_service.stop()
-        assert camera_mock.is_running is False
+        assert camera_driver_mock.is_running is False
         
 
-    def test_camera_record(self, camera_mock):
-        camera_service = CameraService(camera_mock)
+    def test_camera_record(self, camera_driver_mock):
+        camera_service = CameraService(camera_driver_mock)
         camera_service.start()
 
         records = [i for i in camera_service.record()]
