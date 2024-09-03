@@ -1,10 +1,10 @@
 import logging
-from drivers.camera_interface import CameraInterface
+from drivers.camera_driver_interface import CameraDriverInterface
 
 logger = logging.getLogger('CameraFake')
 
 
-class CameraFake(CameraInterface):
+class CameraDriverFake(CameraDriverInterface):
     def __init__(self) -> None:
         pass
 

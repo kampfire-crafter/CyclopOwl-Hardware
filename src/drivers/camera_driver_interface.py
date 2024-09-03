@@ -1,4 +1,4 @@
-class CameraInterface:
+class CameraDriverInterface:
     def __init__(self) -> None:
         pass
 

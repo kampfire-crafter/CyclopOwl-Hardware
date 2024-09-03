@@ -1,12 +1,12 @@
 import pytest
 import io
-from drivers.camera_interface import CameraInterface
+from drivers.camera_driver_interface import CameraDriverInterface
 from services.camera_service import CameraService
 
 def stream_mock():
     return [io.StringIO(str(i)) for i in range(0, 9)]
 
-class CameraMock(CameraInterface):
+class CameraMock(CameraDriverInterface):
     def __init__(self):
         self.is_running = False
 

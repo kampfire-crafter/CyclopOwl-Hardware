@@ -2,12 +2,12 @@ import io
 import time
 import picamera
 import logging
-from drivers.camera_interface import CameraInterface
+from drivers.camera_driver_interface import CameraDriverInterface
 
 logger = logging.getLogger('Camera')
 
 
-class Camera(CameraInterface):
+class CameraDriver(CameraDriverInterface):
     def __init__(self) -> None:
         self.camera = picamera.PiCamera()
         self.camera.resolution = (640, 480)
