@@ -1,12 +1,12 @@
 from typing import Callable
 import logging
 import socket
-from socket_handlers.socket_client_handler_interface import SocketClientHandlerInterface
-from socket_handlers.io.camera_streaming_to_client_interface import CameraStreamingToClientInterface
+from handlers.client_handler_interface import ClientHandlerInterface
+from handlers.io.camera_streaming_to_client_interface import CameraStreamingToClientInterface
 
 logger = logging.getLogger("SocketClientHandler")
 
-class SocketClientHandler(SocketClientHandlerInterface):
+class ClientHandler(ClientHandlerInterface):
     """Handle the client"""
     
     def __init__(self, camera_streaming_to_client_factory: Callable[[socket.socket], CameraStreamingToClientInterface]) -> None:

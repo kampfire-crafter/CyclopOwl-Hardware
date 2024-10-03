@@ -3,9 +3,9 @@ import socket
 import time
 from threading import Thread
 from sockets.main_socket import MainSocket
-from socket_handlers.socket_client_handler_interface import SocketClientHandlerInterface
+from handlers.client_handler_interface import ClientHandlerInterface
 
-class ClientHandlerMock(SocketClientHandlerInterface):
+class ClientHandlerMock(ClientHandlerInterface):
     def __init__(self):
         self.is_handled = False
 

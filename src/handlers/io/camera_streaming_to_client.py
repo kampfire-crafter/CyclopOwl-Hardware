@@ -25,12 +25,12 @@ class CameraStreamingToClient(threading.Thread):
 
     def _stream(self):
         self.camera_service.start()
-        
+
         for stream in self.camera_service.record():
             self._send_stream_data(stream)
             if not self.is_running:
                 break
-        
+
     def _send_stream_data(self, stream: io.BytesIO) -> None:
         size = struct.pack('<L', stream.tell())
         stream.seek(0)

@@ -1,9 +1,9 @@
 from dependency_injector import containers, providers
 from services.camera_service import CameraService
-from socket_handlers.socket_client_handler import SocketClientHandler
+from handlers.client_handler import ClientHandler
 from sockets.main_socket import MainSocket
 from drivers.camera_driver import CameraDriver
-from socket_handlers.io.camera_streaming_to_client import CameraStreamingToClient
+from handlers.io.camera_streaming_to_client import CameraStreamingToClient
 
 class Container(containers.DeclarativeContainer):
     config = providers.Configuration()
@@ -13,7 +13,7 @@ class Container(containers.DeclarativeContainer):
     camera_streaming_to_client_factory = providers.Factory(CameraStreamingToClient,
                                                            camera_service=camera_service)
     
-    client_handler = providers.Singleton(SocketClientHandler,
+    client_handler = providers.Singleton(ClientHandler,
                                          camera_streaming_to_client_factory=camera_streaming_to_client_factory)
     
     main_socket = providers.Singleton(
