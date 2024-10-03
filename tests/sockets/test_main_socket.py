@@ -7,17 +7,18 @@ from socket_handlers.socket_client_handler_interface import SocketClientHandlerI
 
 class ClientHandlerMock(SocketClientHandlerInterface):
     def __init__(self):
-        self.handled = False
+        self.is_handled = False
 
     def handle(self, conn, addr):
-        self.handled = True
-
-@pytest.fixture
-def client_handler():
-    return ClientHandlerMock()
+        self.is_handled = True
 
 class TestMainSocket:
-    def test_cyclopowl_socket(self, client_handler):
+
+    @pytest.fixture
+    def client_handler(self):
+        return ClientHandlerMock()
+
+    def test_main_socket(self, client_handler):
         # Create the server
         server = MainSocket("127.0.0.1", 8080, client_handler)
         Thread(target=server.listen).start()
@@ -28,6 +29,6 @@ class TestMainSocket:
         server.stop()
         time.sleep(1)
 
-        assert client_handler.handled is True
+        assert client_handler.is_handled is True
 
         client.close()

@@ -9,8 +9,10 @@ logger = logging.getLogger("CameraStreamingToClient")
 
 class CameraStreamingToClient(threading.Thread):
     def __init__(self, conn: socket.socket,  camera_service: CameraServiceInterface) -> None:
-        self._camera_service = camera_service
-        self._conn = conn
+        super().__init__()
+        self.camera_service = camera_service
+        self.conn = conn
+        self.is_running = True
 
     def run(self):
         logger.info("Start to send streaming to client")
@@ -19,17 +21,22 @@ class CameraStreamingToClient(threading.Thread):
         except Exception as e:
             logger.error(e)
         finally:
-            self._camera_service.stop()
+            self.camera_service.stop()
 
     def _stream(self):
-        self._camera_service.start()
+        self.camera_service.start()
         
-        for stream in self._camera_service.record():
+        for stream in self.camera_service.record():
             self._send_stream_data(stream)
+            if not self.is_running:
+                break
         
     def _send_stream_data(self, stream: io.BytesIO) -> None:
         size = struct.pack('<L', stream.tell())
         stream.seek(0)
         read = stream.getvalue()
-        self._conn.send(size)
-        self._conn.send(read)
+        self.conn.send(size)
+        self.conn.send(read)
+
+    def stop(self):
+        self.is_running = False

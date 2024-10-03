@@ -1,10 +1,18 @@
 FROM balenalib/rpi-debian-python:3.11-buster
 
-RUN pip install pigpio rpyc 
+RUN apt-get update && apt-get install -y \
+    gcc \
+    build-essential \
+    libffi-dev \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install pigpio rpyc python-dotenv dependency-injector
 
 RUN apt update && apt install pigpio python3-numpy python-picamera python3-picamera
+
 WORKDIR /app
 
-COPY . /app
+COPY ./src /app/src
 
 CMD ["sh", "-c", "pigpiod && sleep 2 && python /app/src/main.py > /dev/stdout 2>&1"]
