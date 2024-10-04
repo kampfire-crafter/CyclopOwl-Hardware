@@ -1,9 +1,16 @@
-class CameraServiceInterface:
-    def start(self):
-        pass
+from abc import ABC, abstractmethod
 
-    def stop(self):
-        pass
+class CameraServiceInterface(ABC):
+    """Interface for camera service."""
 
-    def record(self):
-        pass
+    @abstractmethod
+    def start(self) -> None:
+        """Starts the camera service."""
+
+    @abstractmethod
+    def stop(self) -> None:
+        """Stops the camera service."""
+
+    @abstractmethod
+    def record(self) -> None:
+        """Records using the camera service."""

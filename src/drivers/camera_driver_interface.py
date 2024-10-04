@@ -1,12 +1,20 @@
-class CameraDriverInterface:
+from abc import ABC, abstractmethod
+
+class CameraDriverInterface(ABC):
+    """Interface for the camera driver."""
+    
+    @abstractmethod
     def __init__(self) -> None:
-        pass
+        """Initializes the camera driver interface."""
 
+    @abstractmethod
     def start(self) -> None:
-        pass
+        """Starts the camera."""
 
+    @abstractmethod
     def stop(self) -> None:
-        pass
+        """Stops the camera."""
 
+    @abstractmethod
     def record(self):
-        pass
+        """Records frames from the camera."""

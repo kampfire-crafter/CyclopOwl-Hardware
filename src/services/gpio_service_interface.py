@@ -1,9 +1,12 @@
-class GPIOServiceInterface:
+from abc import ABC, abstractmethod
+
+class GPIOServiceInterface(ABC):
+    """Interface for GPIO service."""
+
+    @abstractmethod
     def __init__(self) -> None:
-        pass
+        """Initializes the GPIO service interface."""
 
-    def calibrate(self):
-        pass
-
-    def move(self):
-        pass
+    @abstractmethod
+    def move(self, angles: tuple[int, int]) -> None:
+        """Rotate the GPIO service to a specific position."""
