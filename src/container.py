@@ -1,20 +1,30 @@
-from dependency_injector import containers, providers
-from services.camera_service import CameraService
-from handlers.client_handler import ClientHandler
+import env
+import os
+import socket
+from typing import Any
 from sockets.main_socket import MainSocket
+from handlers.client_handler import ClientHandler
+
 from drivers.camera_driver import CameraDriver
-from handlers.io.camera_streaming_to_client import CameraStreamingToClient
+from services.camera_service import CameraService
+from services.camera_service_interface import CameraServiceInterface
 
-class Container(containers.DeclarativeContainer):
-    config = providers.Configuration()
+from drivers.gpio_driver import GPIODriver
+from services.gpio_service import GPIOService
+from services.gpio_service_interface import GPIOServiceInterface
 
-    camera_driver = providers.Singleton(CameraDriver)
-    camera_service = providers.Singleton(CameraService, camera=camera_driver)
-    camera_streaming_to_client_factory = providers.Factory(CameraStreamingToClient,
-                                                           camera_service=camera_service)
-    
-    client_handler = providers.Singleton(ClientHandler,
-                                         camera_streaming_to_client_factory=camera_streaming_to_client_factory)
-    
-    main_socket = providers.Singleton(
-        MainSocket, host=config.host, port=config.port, client_handler=client_handler)
+from handlers.io.camera_streaming_to_client import CameraStreamingToClientFactory
+from handlers.io.client_setpoint_to_gpio import ClientSetpointToGPIOFactory
+
+class Container:
+    camera_driver = CameraDriver()
+    camera_service = CameraService(camera_driver)
+    cam_streaming_factory = CameraStreamingToClientFactory(camera_service)
+
+    gpio_driver = GPIODriver()
+    gpio_service = GPIOService(gpio_driver, int(os.getenv('PIN_SERVO_X') or 0), int(os.getenv('PIN_SERVO_Y') or 1))
+    gpio_factory = ClientSetpointToGPIOFactory(gpio_service)
+
+    client_handler = ClientHandler(cam_streaming_factory, gpio_factory)
+
+    main_socket = MainSocket(host=os.getenv('HOST'), port=int(os.getenv('PORT')), client_handler=client_handler)

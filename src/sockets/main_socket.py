@@ -17,7 +17,6 @@ class MainSocket:
 
     def listen(self) -> None:
         """Listen and wait for a client connection"""
-
         try:
             self._wait_new_client()
 
@@ -30,8 +29,7 @@ class MainSocket:
             conn, addr = self.socket.accept()
             logger.info("Client connected : %s", addr)
 
-            with conn:
-                self.client_handler.handle(conn, addr)
+            self.client_handler.handle(conn, addr)
 
     def stop(self) -> None:
         """Stop waiting a client connection"""

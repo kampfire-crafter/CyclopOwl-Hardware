@@ -16,6 +16,7 @@ class CameraStreamingToClient(threading.Thread):
 
     def run(self):
         logger.info("Start to send streaming to client")
+        self.camera_service.start()
         try:
             self._stream()
         except Exception as e:
@@ -24,8 +25,6 @@ class CameraStreamingToClient(threading.Thread):
             self.camera_service.stop()
 
     def _stream(self):
-        self.camera_service.start()
-
         for stream in self.camera_service.record():
             self._send_stream_data(stream)
             if not self.is_running:
@@ -34,9 +33,18 @@ class CameraStreamingToClient(threading.Thread):
     def _send_stream_data(self, stream: io.BytesIO) -> None:
         size = struct.pack('<L', stream.tell())
         stream.seek(0)
-        read = stream.getvalue()
+        data = stream.getvalue()
         self.conn.send(size)
-        self.conn.send(read)
+        self.conn.send(data)
 
     def stop(self):
+        logger.info("Stop the streaming to client")
         self.is_running = False
+
+class CameraStreamingToClientFactory:
+    def __init__(self, camera_service: CameraServiceInterface) -> None:
+        self.camera_service = camera_service
+
+    def __call__(self, conn: socket.socket) -> None:
+        return CameraStreamingToClient(conn, self.camera_service)
+    

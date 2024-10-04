@@ -6,7 +6,6 @@ from drivers.camera_driver_interface import CameraDriverInterface
 
 logger = logging.getLogger('Camera')
 
-
 class CameraDriver(CameraDriverInterface):
     def __init__(self) -> None:
         self.camera = picamera.PiCamera()
@@ -27,4 +26,3 @@ class CameraDriver(CameraDriverInterface):
     def stop(self) -> None:
         logger.info('Stop the camera')
         self.camera.stop_preview()
-        self.camera.close()
