@@ -16,6 +16,7 @@ logger = logging.getLogger('Main')
 
 try:
     if __name__ == "__main__":
+        # Start the socket listening
         logger.info("CyclopOwl - Start")
         main_socket = Container.main_socket
         main_socket.listen()

@@ -1,5 +1,6 @@
 FROM balenalib/rpi-debian-python:3.11-buster
 
+# Install dependencies builders
 RUN apt-get update && apt-get install -y \
     gcc \
     build-essential \
@@ -7,12 +8,16 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip install pigpio rpyc python-dotenv
+# Install python dependencies
+COPY ./requirements.txt /app/
+RUN pip install -r /app/requirements.txt
 
+# Install rasoberrypi specific dependencies
 RUN apt update && apt install pigpio python3-numpy python-picamera python3-picamera
 
-WORKDIR /app
-
+# Copy the application
 COPY ./src /app/src
+
+WORKDIR /app
 
 CMD ["sh", "-c", "pigpiod && sleep 2 && python /app/src/main.py > /dev/stdout 2>&1"]

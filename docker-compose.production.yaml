@@ -7,6 +7,4 @@ services:
     volumes:
       - ./:/app/
     network_mode: "host"
-    # devices:
-    #   - "/dev/gpiomem:/dev/gpiomem" # Permet l'accès aux GPIO
-    privileged: true # Nécessaire pour accéder aux périphériques matériels
+    privileged: true # Mandatory to give access to the container to /dev of the host (raspberry pi)

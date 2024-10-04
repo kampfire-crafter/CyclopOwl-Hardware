@@ -4,4 +4,3 @@ services:
     build: .
     volumes:
       - ./:/app/
-    command: ["/bin/bash", "-c", "sleep 100000"]

@@ -1,0 +1,3 @@
+pigpio==1.78
+python-dotenv==1.0.1
+rpyc==6.0.1

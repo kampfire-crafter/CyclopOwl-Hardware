@@ -1,8 +1,0 @@
-services:
-  cyclopowl-hardware:
-    container_name: cyclopowl-hardware
-    build: .
-    volumes:
-      - ./:/app/
-    network_mode: "host"
-    privileged: true
