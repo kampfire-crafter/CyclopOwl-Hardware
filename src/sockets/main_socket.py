@@ -4,7 +4,6 @@ import socket
 
 logger = logging.getLogger('MainSocket')
 
-
 class MainSocket:
     """Receive the client connection, then transfer the client to the handler"""
 
@@ -26,9 +25,10 @@ class MainSocket:
     def _wait_new_client(self):
         """Wait for a client connection then handle it"""
         while self.is_running:
+            logger.info("Waiting for client connection")
             conn, addr = self.socket.accept()
-            logger.info("Client connected : %s", addr)
 
+            logger.info("Client connected : %s", addr)
             self.client_handler.handle(conn, addr)
 
     def stop(self) -> None:
