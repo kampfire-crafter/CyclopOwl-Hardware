@@ -20,7 +20,7 @@ class CameraStreamingToClient(threading.Thread):
         self.is_running = True
 
     def run(self) -> None:
-        """Executes the main streaming loop with proper error handling."""
+        """Executes the main streaming loop."""
         logger.info("Start to send streaming to client")
         self.camera_service.start()
         try:
@@ -46,7 +46,7 @@ class CameraStreamingToClient(threading.Thread):
         self.conn.send(data)
 
     def stop(self) -> None:
-        """Signals the streaming thread to stop gracefully."""
+        """Signals the streaming thread to stop."""
         logger.info("Stop the streaming to client")
         self.is_running = False
 

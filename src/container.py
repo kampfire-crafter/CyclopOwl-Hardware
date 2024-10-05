@@ -1,3 +1,4 @@
+import env
 import os
 from sockets.main_socket import MainSocket
 from handlers.client_handler import ClientHandler
