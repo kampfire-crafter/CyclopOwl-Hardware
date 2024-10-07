@@ -117,3 +117,9 @@ client.send('{"action":"ROTATE","args":[0,0]}'.encode())
 ```
 </div>
 
+<div style="text-align: justify;">
+
+
+### Running Tests
+
+On your development environment, or on the raspberry, run ```docker compose up -d```, then ```docker exec -ti cyclopowl-hardware pytest```.
