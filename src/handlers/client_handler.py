@@ -43,14 +43,14 @@ class ClientHandler(ClientHandlerInterface):
         if command == "":
             self.release()
             return
-        
+
         decoded_command: Command = json.loads(command)
         try:
             action = CommandAction(decoded_command["action"])
         except ValueError:
             logger.info("Action unknown")
             return
-        
+
         self._handle_action(action, decoded_command["args"], conn)
 
     def _handle_action(
@@ -71,7 +71,7 @@ class ClientHandler(ClientHandlerInterface):
 
             case CommandAction.ROTATE:
                 self.gpio_service.move(args)
-    
+
     def release(self) -> None:
         """Cleans up resources."""
         logger.info("Release the client")

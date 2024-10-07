@@ -6,22 +6,12 @@
 
 ## Project Description
 
-CyclopOwl project is focuses on building a rotative camera system using a Raspberry Pi Zero W. The camera can be housed in a custom 3D-printed structure that accommodates two servo motors, allowing the camera to rotate. This setup provides a full range of motion in multiple directions. The system incorporates the following components (the below 3D printed structure is an example):
+This project is focuses on building a rotative camera system using a Raspberry Pi Zero W. The system incorporates the following components :
 
-<div style="display: flex; align-items: center; justify-content: space-between;">
-
-<div style="margin: 20px;">
-
-- **3D-Printed Structure (brown)**: The camera's housing is custom-designed and 3D-printed, providing durability and a tailored fit for the components.
-- **Raspberry Pi Zero W (green)**: It offers sufficient processing power for video streaming and motor control, along with built-in Wi-Fi for seamless wireless communication, making it ideal for remote monitoring and control.
-- **PiCamera (green)**: A camera module specifically designed for use with Raspberry Pi, ensuring reliable video capture.
-- **Cooling Fan (black)**: To maintain optimal operating temperatures for the Raspberry Pi, a cooling fan is integrated, preventing overheating during prolonged use.
+- **Raspberry Pi Zero W**: It offers sufficient processing power for video streaming and motor control, along with built-in Wi-Fi for seamless wireless communication.
+- **PiCamera**: A camera module specifically designed for use with Raspberry Pi, ensuring video capture.
+- **Cooling Fan**: To maintain optimal operating temperatures, a cooling fan can be integrated, preventing overheating during prolonged use.
 - **Two Servo Motors (blue)**: These motors allow for precise control of the camera's orientation.
-
-</div>
-<img src="./docs/camera_360.gif" alt="CycloOwlIcon" width="250px" style="margin: 20px;"/>
-
-</div>
 
 ## Setting Up the Project on Raspberry Pi Zero W
 
@@ -41,21 +31,13 @@ Connect the Pi Camera to the Raspberry Pi using the camera interface (CSI) conne
 
 ### Software
 
-Ensure you have a Raspberry Pi Zero W with Raspbian installed. You will need Docker and Docker Compose installed on your Raspberry Pi. If you haven't installed them yet, follow the official Docker installation guide and Docker Compose installation guide.
-
-Clone the project repository to your Raspberry Pi using Git. Open a terminal and run:
-
-```bash
-git clone <repository_url>
-cd <repository_directory>
-```
+Install Raspbian on the Raspberry Pi and connect it to the wifi. You will need Docker and Docker Compose installed, if you haven't installed them yet, follow the official Docker installation guide and Docker Compose installation guide. Clone the project repository to the Raspberry Pi using Git.
 
 #### Prepare Environment Variables
 
-Create an .env file in the root directory of the project. This file should include the necessary environment variables (cp .env.example .env), such as the GPIO pins for the servos:
+Create an .env file in the src directory of the project (```cp src/.env.example src/.env```), and modify it depending on your preferences:
 
 ```
-ENV="development"
 HOST="0.0.0.0"
 PORT=8000
 PIN_SERVO_X=12
@@ -64,56 +46,58 @@ PIN_SERVO_Y=13
 
 #### Build and start the Docker Container
 
-In the terminal, navigate to the directory containing your docker-compose.yml file. Build the Docker container using:
+Navigate to the directory containing your docker-compose.yml file. Build the Docker container using:
 
 ```bash
 docker compose -f /home/pi/CyclopOwl-Hardware/docker-compose.production.yaml up --build -d
 ```
 
-The docker command will run the pigpiod daemon, which is required for GPIO control, and execute the main application script.
+The docker command will run the pigpiod daemon, which is required for GPIO control, and execute the application script.
 
 ## How to interact with the camera
 
+After the application is up and running, you need obviously to create a client to interact with the camera.
+
 ### Streaming
 
-After the application is up and running, you can access the camera streaming by connecting a client throught the socket. Use python socket package :
-
-```python
-import socket
-
-client = socket.socket()
-client.connect(('192.168.1.23', 8000))
-
-conn = client.makefile('rb')
-```
-
-Enable the streaming by sending this command :
-
-```python
-client.send('{"action":"ENABLE_STREAMING","args":[]}'.encode())
-```
-
-And listen the camera stream with :
+You can access the camera streaming by connecting a client throught the socket. Use python socket package :
 
 ```python
 import io
 import struct
+import socket
+import time
 
+# Connection to the camera
+client = socket.socket()
+client.connect((<rasp_ip>, 8000))
+
+# Create file (read only bytes) to receive the data
+conn = client.makefile('rb')
+
+time.sleep(1)
+
+# Enable the streaming by sending this command
+client.send('{"action":"ENABLE_STREAMING","args":[]}'.encode())
+
+# Calculate the size in bytes for a 4-byte unsigned integer (little-endian format)
 size = struct.calcsize('<L')
 
-while True:
-    length_co = conn.read(size)
-    # conn.flush()
-    length = struct.unpack('<L', length_co)[0]
-    image = io.BytesIO()
-    image.write(conn.read(length))
-    # conn.flush()
-    ...
-```
+# To receive images :
+# To receive continuously images add :
+# while True:
+length_co = conn.read(size)
 
-Then, it can be disabled by sending this command :
+# Decode the image size
+length = struct.unpack('<L', length_co)[0]
 
-```python
+# Get the image data
+raw_image = conn.read(length)
+
+image = io.BytesIO()
+image.write(raw_image)
+
+# Then, the streaming can be disabled by sending this command :
 client.send('{"action":"DISABLE_STREAMING","args":[]}'.encode())
 ```
 
@@ -124,12 +108,12 @@ To rotate the camera :
 ```python
 import socket
 
+# Connection to the camera
 client = socket.socket()
-client.connect(('192.168.1.23', 8000))
+client.connect((<rasp_ip>, 8000))
 
-conn = client.makefile('rb')
-
-# change the args values -> [x,y]
+# cChange the args values -> [x,y]
 client.send('{"action":"ROTATE","args":[0,0]}'.encode())
 ```
 </div>
+
